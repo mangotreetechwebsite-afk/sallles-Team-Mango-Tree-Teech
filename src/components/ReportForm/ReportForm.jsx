@@ -21,7 +21,7 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
 
   // Pricing & Coupon States (Default ₹1,199 -> Coupon drops to ₹999)
   const [discountApplied, setDiscountApplied] = useState(false);
-  const [displayPrice, setDisplayPrice] = useState(1);
+  const [displayPrice, setDisplayPrice] = useState(1199);
   const [isRolling, setIsRolling] = useState(false);
 
   // Live 10-Minute Urgency Countdown Timer
@@ -138,7 +138,7 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
 
     // Fast Rolling Counter Animation (₹1,199 down to ₹999)
     let current = 1199;
-    const target = 1;
+    const target = 999;
     const step = 20;
     const interval = setInterval(() => {
       current -= step;
