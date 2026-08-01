@@ -238,7 +238,7 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
         contact: formData.phone
       },
       notes: {
-        payment_type: "new_vastu_form_checkout", // Modified so old Google Sheet ignores it!
+        payment_type: "new_vastu_form_checkout",
         unique_customer_id: uniqueCustomerId,
         full_name: formData.fullName,
         phone_number: formData.phone,
@@ -283,26 +283,33 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
       {/* HTML5 Canvas for Realistic Party Popper 🎉 Confetti Burst */}
       <canvas id="confetti-canvas" />
 
-      {/* Top Header Navigation Bar */}
+      {/* Top Header Navigation Bar (Logo placed on Left next to Back button) */}
       <div className="max-w-[1400px] mx-auto flex items-center justify-between border-b border-orange-200/90 pb-2.5 sm:pb-4 mb-3 sm:mb-6 relative z-10">
-        <button 
-          onClick={onBack}
-          className="flex items-center gap-1 text-xs sm:text-base font-extrabold text-slate-700 hover:text-[#ea580c] transition-colors cursor-pointer"
-        >
-          <ArrowLeft size={18} className="shrink-0" />
-          <span>Back</span>
-        </button>
+        
+        {/* Left Side: Back Button + VastuWheels Logo */}
+        <div className="flex items-center gap-3 sm:gap-4">
+          <button 
+            onClick={onBack}
+            className="flex items-center gap-1 text-xs sm:text-base font-extrabold text-slate-700 hover:text-[#ea580c] transition-colors cursor-pointer"
+          >
+            <ArrowLeft size={18} className="shrink-0" />
+            <span>Back</span>
+          </button>
+          
+          <div className="h-5 w-px bg-orange-300/80" />
 
-        <div className="flex items-center gap-2">
           <img 
             src={vwLogo} 
             alt="Vastu Wheels Logo" 
-            className="h-8 sm:h-10 md:h-12 w-auto object-contain"
+            onClick={onBack}
+            className="h-8 sm:h-10 md:h-12 w-auto object-contain cursor-pointer transition-transform hover:scale-105"
           />
-          <span className="bg-orange-100/90 text-[#ea580c] text-[11px] sm:text-sm font-black px-2.5 sm:px-3.5 py-0.5 rounded-full border border-orange-300 shadow-sm">
-            Checkout
-          </span>
         </div>
+
+        {/* Right Side: Checkout Badge */}
+        <span className="bg-orange-100/90 text-[#ea580c] text-[11px] sm:text-sm font-black px-3 sm:px-4 py-1 rounded-full border border-orange-300 shadow-sm">
+          Checkout
+        </span>
       </div>
 
       {/* Main Container Grid */}
