@@ -34,13 +34,13 @@ export default function StickyCTA({ onNavigateCheckout }) {
 
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-3 sm:gap-6 relative z-10">
           
-          {/* LEFT COLUMN: Pricing Block (Strikethrough cut price ₹5,999 above, Big ₹996 below) */}
+          {/* LEFT COLUMN: Pricing Block (Strikethrough cut price ₹5,999 above, Big ₹1,199 below) */}
           <div className="flex flex-col items-start sm:items-center justify-center leading-none min-w-[70px] sm:min-w-[90px] shrink-0">
             <span className="line-through text-orange-200 text-xs sm:text-sm md:text-base font-bold tracking-tight">
               ₹5,999
             </span>
             <span className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white font-sora tracking-tight mt-0.5 drop-shadow-sm">
-              ₹996
+              ₹1,199
             </span>
           </div>
 

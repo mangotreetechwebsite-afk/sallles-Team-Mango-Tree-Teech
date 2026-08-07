@@ -41,8 +41,8 @@ export default function ThankYouPage({ selectedLanguage, fullName, phone, email,
     }
 
     // Fire Meta Facebook Pixel Purchase Triggers:
-    trackPixelEvent("Purchase English", { value: 996, currency: "INR" }, true);
-    trackPixelEvent("Purchase", { value: 996, currency: "INR", content_name: "Vastu Wheels English FB" });
+    trackPixelEvent("Purchase English", { value: 1199, currency: "INR" }, true);
+    trackPixelEvent("Purchase", { value: 1199, currency: "INR", content_name: "Vastu Wheels English FB" });
   }, [showPopup]);
 
   // 🎉 Party Popper Confetti Burst & Fast Rolling Price Animation (₹1,999 down to ₹1,799)
@@ -102,7 +102,7 @@ export default function ThankYouPage({ selectedLanguage, fullName, phone, email,
       return;
     }
 
-    const keyId = import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_SSFQ4gpLaM0VXb";
+    const keyId = import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_T352jcZMnVxxRV";
 
     // Create Razorpay Order via Orders API for instant automatic payment capture
     let orderId = "";
@@ -395,7 +395,7 @@ export default function ThankYouPage({ selectedLanguage, fullName, phone, email,
             </h3>
             <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 text-[11px] font-extrabold px-3 py-0.5 rounded-full flex items-center gap-1">
               <ShieldCheck size={13} className="text-emerald-700" />
-              <span>{isVipUpgraded ? "PAID (UPGRADE REPORT)" : "PAID ₹996"}</span>
+              <span>{isVipUpgraded ? "PAID (UPGRADE REPORT)" : "PAID ₹1,199"}</span>
             </span>
           </div>
 

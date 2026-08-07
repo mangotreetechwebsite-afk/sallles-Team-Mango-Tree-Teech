@@ -1,17 +1,14 @@
 /**
  * ====================================================================
- * NEW VASTUWHEELS - RAZORPAY WEBHOOK + WATI AUTOMATION (Code.gs)
+ * VASTUWHEELS - STRICT WEBHOOK + WATI AUTOMATION (Code.gs)
  * ====================================================================
  * 
- * INSTRUCTIONS FOR YOUR NEW GOOGLE SHEET:
- * 1. Open your NEW Google Sheet -> Extensions -> Apps Script.
+ * INSTRUCTIONS FOR YOUR GOOGLE SHEET:
+ * 1. Open your Google Sheet ("Sales Team VastuWheels Report") -> Extensions -> Apps Script.
  * 2. Delete all code inside `Code.gs` and paste THIS EXACT CODE.
  * 3. Click Save (Ctrl + S).
  * 4. Select `setupSheetHeaders` from top toolbar and click 'Run' ONCE to create Tab headers.
- * 5. Click 'Deploy' -> 'New deployment' -> Select type 'Web app':
- *    - Execute as: 'Me'
- *    - Who has access: 'Anyone'
- *    - Click 'Deploy' and copy the Web App URL into Razorpay Webhook Dashboard!
+ * 5. Click 'Deploy' -> 'Manage deployments' -> Edit (Pencil) -> Version: 'New version' -> 'Deploy'!
  * 6. FOR AUTOMATIC WHATSAPP MESSAGES:
  *    - Click Clock icon ⏰ (Triggers) on left sidebar -> 'Add Trigger'.
  *    - Choose function: `sendPendingWatiMessages`
@@ -28,10 +25,10 @@ var TEMPLATE_NAME = "vastu_wheels_report";
 function setupSheetHeaders() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   
-  // TAB 1: 996 Payments (7 Clean Columns)
-  var sheet996 = ss.getSheetByName("996 Payments");
+  // TAB 1: 999 Payments (7 Clean Columns)
+  var sheet996 = ss.getSheetByName("999 Payments");
   if (!sheet996) {
-    sheet996 = ss.insertSheet("996 Payments");
+    sheet996 = ss.insertSheet("999 Payments");
   }
   
   var headers996 = [
@@ -78,7 +75,7 @@ function setupSheetHeaders() {
   sheetPopup.setFrozenRows(1);
 }
 
-// 2. RAZORPAY WEBHOOK RECEIVER FUNCTION
+// 2. RAZORPAY WEBHOOK RECEIVER FUNCTION WITH STRICT FILTERING
 function doPost(e) {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -87,10 +84,27 @@ function doPost(e) {
     var payment = postData.payload && postData.payload.payment ? postData.payload.payment.entity : {};
     var notes = payment.notes || {};
 
-    var rawAmount = payment.amount ? payment.amount / 100 : 996;
+    var rawAmount = payment.amount ? Math.round(payment.amount / 100) : 999;
     var formattedDate = Utilities.formatDate(new Date(), "Asia/Kolkata", "dd-MM-yyyy HH:mm:ss");
     var paymentId = payment.id || "N/A";
-    var uniqueCustomerId = notes.unique_customer_id || "VW-" + Math.floor(10000000 + Math.random() * 90000000);
+    var uniqueCustomerId = notes.unique_customer_id || "NEWVW-" + Math.floor(10000000 + Math.random() * 90000000);
+
+    // -------------------------------------------------------------
+    // STRICT FILTER 1: ONLY PROCESS PAYMENTS FROM THIS NEW LANDING PAGE
+    // (Ignores payments with old IDs like "VW-" or random external webhooks)
+    // -------------------------------------------------------------
+    var isNewLandingPagePayment = (
+      notes.payment_type === "new_vastu_form_checkout" ||
+      notes.payment_type === "new_vastu_popup_upgrade" ||
+      (notes.unique_customer_id && notes.unique_customer_id.indexOf("NEWVW-") === 0)
+    );
+
+    if (!isNewLandingPagePayment) {
+      return ContentService.createTextOutput(JSON.stringify({ 
+        status: "ignored", 
+        message: "Ignored: Payment is not from the NEW VastuWheels landing page." 
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
 
     var fullName = notes.full_name || notes.customer_name || "Valued Customer";
     if (fullName === payment.contact || /^\+?\d{10,12}$/.test(fullName.trim())) {
@@ -99,13 +113,18 @@ function doPost(e) {
 
     var phone = notes.phone_number || payment.contact || "N/A";
 
+    // -------------------------------------------------------------
+    // STRICT FILTER 2: AMOUNT & TAB DISPATCHING
+    // -------------------------------------------------------------
     var isPopupUpgrade = (
-      (notes.payment_type && notes.payment_type.indexOf("upgrade") !== -1) ||
-      notes.upgrade_type === "VIP 1-on-1 Consultation" ||
+      notes.payment_type === "new_vastu_popup_upgrade" ||
       notes.upgrade_type === "1-on-1 Consultation" ||
       (notes.original_payment_id && notes.original_payment_id !== "N/A") ||
       rawAmount >= 1500
     );
+
+    // TAB 1 ("999 Payments") MUST STRICTLY ONLY ACCEPT ₹1199 OR ₹999 PAYMENTS!
+    var isValidCheckoutAmount = (rawAmount === 1199 || rawAmount === 999);
 
     if (isPopupUpgrade) {
       // TAB 2: Popup Sheet (Col 8 H = Wati Status)
@@ -131,12 +150,12 @@ function doPost(e) {
       return ContentService.createTextOutput(JSON.stringify({ status: "success", tab: "Popup Sheet", unique_customer_id: uniqueCustomerId }))
         .setMimeType(ContentService.MimeType.JSON);
 
-    } else {
-      // TAB 1: 996 Payments (Col 7 G = Wati Status)
-      var sheet996 = ss.getSheetByName("996 Payments");
+    } else if (isValidCheckoutAmount) {
+      // TAB 1: 999 Payments (STRICTLY ONLY ₹1199 OR ₹999)
+      var sheet996 = ss.getSheetByName("999 Payments");
       if (!sheet996) {
         setupSheetHeaders();
-        sheet996 = ss.getSheetByName("996 Payments");
+        sheet996 = ss.getSheetByName("999 Payments");
       }
 
       sheet996.appendRow([
@@ -149,8 +168,15 @@ function doPost(e) {
         "PENDING"
       ]);
 
-      return ContentService.createTextOutput(JSON.stringify({ status: "success", tab: "996 Payments", unique_customer_id: uniqueCustomerId }))
+      return ContentService.createTextOutput(JSON.stringify({ status: "success", tab: "999 Payments", unique_customer_id: uniqueCustomerId }))
         .setMimeType(ContentService.MimeType.JSON);
+
+    } else {
+      // IGNORE any other random amounts (e.g. ₹799, ₹1499, ₹996, ₹1, etc.)
+      return ContentService.createTextOutput(JSON.stringify({ 
+        status: "ignored", 
+        message: "Ignored: Amount ₹" + rawAmount + " is not ₹1199 or ₹999." 
+      })).setMimeType(ContentService.MimeType.JSON);
     }
 
   } catch (error) {
@@ -163,8 +189,8 @@ function doPost(e) {
 function sendPendingWatiMessages() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
 
-  // Tab 1: 996 Payments -> Col D=Amount(4), Col E=Name(5), Col F=Phone(6), Col G=Wati Status(7)
-  var sheet996 = ss.getSheetByName("996 Payments");
+  // Tab 1: 999 Payments -> Col D=Amount(4), Col E=Name(5), Col F=Phone(6), Col G=Wati Status(7)
+  var sheet996 = ss.getSheetByName("999 Payments");
   if (sheet996) {
     processSheetWati(sheet996, 5, 4, 6, 7);
   }
@@ -191,7 +217,7 @@ function processSheetWati(sheet, nameColIndex, amountColIndex, phoneColIndex, st
     // Process rows marked PENDING, FAILED, or empty
     if (currentStatus === "PENDING" || currentStatus.indexOf("FAILED") === 0 || currentStatus === "") {
       var fullName = String(row[nameColIndex - 1]).trim() || "Valued Customer";
-      var amount = String(row[amountColIndex - 1]).trim() || "996";
+      var amount = String(row[amountColIndex - 1]).trim() || "999";
       var rawPhone = String(row[phoneColIndex - 1]).trim();
 
       // Clean phone number format (e.g., 917217697887)

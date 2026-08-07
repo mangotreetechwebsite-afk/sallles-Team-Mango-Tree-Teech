@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./ReportForm.css";
 import { 
   ArrowLeft, ShieldCheck, CheckCircle2, Sparkles, AlertCircle, 
-  Phone, User, Clock, Gift, Star, Award, Zap, Scissors, Check, Lock, Quote, CreditCard
+  Phone, User, Clock, Gift, Star, Award, Zap, Scissors, Check, Lock, Quote, CreditCard, Globe, ChevronDown
 } from "lucide-react";
 import vwLogo from "../../assets/VW-HR.png";
 import heroAcharyaImg from "../../assets/Elite Presentation (1).webp";
@@ -10,10 +10,11 @@ import { trackPixelEvent } from "../../utils/pixel";
 import { getUtmParamsForNotes } from "../../utils/utm";
 
 export default function ReportForm({ onBack, onPaymentSuccess }) {
-  // Only 2 Form Inputs: Full Name & WhatsApp Phone Number
+  // Form Inputs: Full Name, WhatsApp Phone Number, & Select Report Language
   const [formData, setFormData] = useState({
     fullName: "",
-    phone: ""
+    phone: "",
+    reportLanguage: "Hindi" // Default to Hindi
   });
 
   const [errors, setErrors] = useState({});
@@ -188,7 +189,7 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
       return;
     }
 
-    const keyId = import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_SSFQ4gpLaM0VXb";
+    const keyId = import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_T352jcZMnVxxRV";
 
     // Create Razorpay Order via Orders API for 100% instant automatic payment capture
     let orderId = "";
@@ -208,7 +209,6 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
       console.warn("Orders API warning, proceeding with fallback checkout options:", err);
     }
 
-    // Prefixed with NEWVW- so old Google Sheet Apps Script ignores this payment!
     const uniqueCustomerId = "NEWVW-" + Math.floor(10000000 + Math.random() * 90000000);
 
     const options = {
@@ -224,7 +224,7 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
         setIsSubmitting(false);
         if (onPaymentSuccess) {
           onPaymentSuccess({
-            language: "English", // Always redirect to English Thank You page!
+            language: formData.reportLanguage, // Passes Hindi or English
             fullName: formData.fullName,
             phone: formData.phone,
             email: "",
@@ -245,7 +245,7 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
         original_price: "₹1,199",
         paid_price: `₹${displayPrice}`,
         coupon_applied: discountApplied ? "VASTU200" : "NONE",
-        report_language: "Vastu Wheels English FB",
+        report_language: formData.reportLanguage === "Hindi" ? "Vastu Wheels Hindi fb" : "Vastu Wheels English FB",
         ...getUtmParamsForNotes()
       },
       theme: {
@@ -266,7 +266,7 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
       setIsSubmitting(false);
       if (onPaymentSuccess) {
         onPaymentSuccess({
-          language: "English",
+          language: formData.reportLanguage,
           fullName: formData.fullName,
           phone: formData.phone
         });
@@ -339,7 +339,7 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
                 Get Your Personalized <span className="text-[#ea580c]">Vastu Report</span>
               </h1>
               <p className="text-xs sm:text-base text-slate-600 font-semibold">
-                Enter your Name & WhatsApp number to instantly claim your report
+                Enter your Name, WhatsApp number & select language to claim your report
               </p>
             </div>
 
@@ -425,7 +425,7 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
               </div>
             </div>
 
-            {/* MAIN FORM: ONLY 2 FIELDS (Full Name & WhatsApp Phone Number) */}
+            {/* MAIN FORM: 3 FIELDS (Full Name, WhatsApp Phone Number, & Select Report Language) */}
             <form onSubmit={handleSubmit} noValidate className="bg-white/95 backdrop-blur-md p-5 sm:p-8 rounded-3xl border-2 border-orange-300/90 shadow-xl space-y-4 sm:space-y-6">
               
               {/* Form Bullet Feature Checklist */}
@@ -502,6 +502,29 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
                       <AlertCircle size={14} /> Valid 10-digit WhatsApp number required
                     </p>
                   )}
+                </div>
+
+                {/* Field 3: Select Report Language (Clean options without flags) */}
+                <div>
+                  <label className="block text-xs sm:text-sm font-black text-slate-800 mb-1.5 uppercase tracking-wide flex items-center gap-1.5">
+                    <Globe size={16} className="text-[#ea580c]" />
+                    <span>Select Report Language *</span>
+                  </label>
+                  <div className="relative rounded-xl border border-slate-300 transition-all checkout-input-group bg-slate-50 overflow-hidden w-full max-w-full box-border">
+                    <select
+                      value={formData.reportLanguage}
+                      onChange={(e) => setFormData({ ...formData, reportLanguage: e.target.value })}
+                      className="w-full bg-transparent px-4 py-3.5 sm:py-4 text-sm sm:text-base text-slate-900 font-extrabold focus:outline-none cursor-pointer appearance-none pr-10 truncate"
+                    >
+                      <option value="Hindi">Hindi (हिंदी रिपोर्ट)</option>
+                      <option value="English">English (English Report)</option>
+                    </select>
+                    
+                    {/* Custom Dropdown Chevron Icon */}
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-600">
+                      <ChevronDown size={18} />
+                    </div>
+                  </div>
                 </div>
 
               </div>

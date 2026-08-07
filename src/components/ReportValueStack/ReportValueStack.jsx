@@ -292,24 +292,25 @@ export default function ReportValueStack({ onNavigateCheckout }) {
           <div className="space-y-1">
             <div className="text-xs text-slate-500 uppercase tracking-widest font-bold">Total Package Value: ₹5,999</div>
             <div className="text-3xl md:text-5xl font-extrabold text-slate-900 font-sora flex items-center justify-center gap-3">
-              <span className="orange-gradient-text">Today Only: ₹996</span>
+              <span className="orange-gradient-text">Today Only: ₹1,199</span>
               <span className="text-slate-400 text-lg md:text-2xl line-through font-normal">₹5,999</span>
             </div>
-            <p className="text-xs md:text-sm text-emerald-700 font-bold">
-              🎉 You Save ₹5,003 Special Ads Discount (83% Off)
+            
+            <p className="text-xs text-slate-500 font-semibold mb-6">
+              (Includes 16-Zone Floorplan Analysis + Non-Demolition Remedies + Free Bonus Guides)
             </p>
-          </div>
 
-          {/* Vibrant Orange Capsule CTA Button */}
-          <div className="pt-2">
-            <button 
-              onClick={onNavigateCheckout}
-              className="w-full sm:w-auto btn-orange-primary text-white font-black text-base sm:text-lg md:text-lg px-7 lg:px-12 py-4 lg:py-4.5 rounded-full shadow-2xl shadow-orange-500/35 flex items-center justify-center gap-3 mx-auto transition-all duration-300 transform hover:scale-[1.02] cursor-pointer border border-amber-300/40 leading-snug tracking-tight"
-            >
-              <Sparkles size={22} className="text-amber-200 animate-pulse shrink-0" />
-              <span>BUY NOW at ₹996 only</span>
-              <ArrowRight size={20} className="text-white shrink-0" />
-            </button>
+            {/* Vibrant Orange Capsule CTA Button */}
+            <div className="pt-2">
+              <button 
+                onClick={onNavigateCheckout}
+                className="w-full sm:w-auto btn-orange-primary text-white font-black text-base sm:text-lg md:text-lg px-6 sm:px-9 py-4 sm:py-4.5 rounded-full shadow-2xl shadow-orange-500/35 flex items-center justify-center gap-2.5 transition-all duration-300 transform hover:scale-[1.02] cursor-pointer border border-amber-300/40 leading-snug tracking-tight"
+              >
+                <Sparkles size={22} className="text-amber-200 animate-pulse shrink-0" />
+                <span>BUY NOW at ₹1,199 only</span>
+                <ArrowRight size={20} className="text-white shrink-0" />
+              </button>
+            </div>
           </div>
 
           <div className="flex items-center justify-center gap-4 text-xs text-slate-500 font-medium pt-1">
