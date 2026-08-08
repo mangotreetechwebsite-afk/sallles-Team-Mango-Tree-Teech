@@ -16,8 +16,8 @@ export default async function handler(req, res) {
     const body = typeof req.body === "string" ? JSON.parse(req.body) : (req.body || {});
     const { amount } = body;
     
-    const keyId = process.env.VITE_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID || "rzp_live_T352jcZMnVxxRV";
-    const keySecret = process.env.RAZORPAY_KEY_SECRET || "x2umlu31KSgSk0uCpct2DGFA";
+    const keyId = process.env.VITE_RAZORPAY_KEY_ID || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID || "rzp_live_SSFQ4gpLaM0VXb";
+    const keySecret = process.env.RAZORPAY_KEY_SECRET || "LCxS51pcOmaaQKCE5tocaJL0";
 
     // Allowed Valid Prices in Paise:
     // ₹1,199 (119900), ₹999 (99900), ₹1,999 (199900), ₹1,799 (179900), ₹1 Test Amount (100)

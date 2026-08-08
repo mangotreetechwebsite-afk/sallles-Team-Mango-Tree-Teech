@@ -102,7 +102,7 @@ export default function ThankYouPage({ selectedLanguage, fullName, phone, email,
       return;
     }
 
-    const keyId = import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_T352jcZMnVxxRV";
+    const keyId = import.meta.env.VITE_RAZORPAY_KEY_ID || import.meta.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_live_SSFQ4gpLaM0VXb";
 
     // Create Razorpay Order via Orders API for instant automatic payment capture
     let orderId = "";
