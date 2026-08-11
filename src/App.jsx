@@ -51,6 +51,7 @@ export default function App() {
     fullName: "", 
     phone: "",
     email: "",
+    paidAmount: 1299,
     paymentId: ""
   });
 
@@ -116,8 +117,9 @@ export default function App() {
       fullName: data.fullName || "",
       phone: data.phone || "",
       email: data.email || "",
+      paidAmount: data.paidAmount || 1299,
       paymentId: data.paymentId || "",
-      uniqueCustomerId: data.uniqueCustomerId || ("VW-" + Math.floor(10000000 + Math.random() * 90000000))
+      uniqueCustomerId: data.uniqueCustomerId || ("NEWVW-" + Math.floor(10000000 + Math.random() * 90000000))
     };
     setOrderInfo(newOrder);
     try {
@@ -146,6 +148,7 @@ export default function App() {
         fullName={orderInfo.fullName} 
         phone={orderInfo.phone} 
         email={orderInfo.email}
+        paidAmount={orderInfo.paidAmount}
         paymentId={orderInfo.paymentId}
         uniqueCustomerId={orderInfo.uniqueCustomerId}
         onBackToHome={handleBackToLanding} 

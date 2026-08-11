@@ -228,6 +228,7 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
             fullName: formData.fullName,
             phone: formData.phone,
             email: "",
+            paidAmount: displayPrice, // 1299 if coupon applied, or 1499
             uniqueCustomerId: uniqueCustomerId,
             paymentId: response?.razorpay_payment_id || ("PAY_" + Math.random().toString(36).substring(2, 10).toUpperCase())
           });
@@ -268,7 +269,8 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
         onPaymentSuccess({
           language: formData.reportLanguage,
           fullName: formData.fullName,
-          phone: formData.phone
+          phone: formData.phone,
+          paidAmount: displayPrice
         });
       }
     }

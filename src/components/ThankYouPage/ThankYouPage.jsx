@@ -4,7 +4,7 @@ import vwLogo from "../../assets/VW-HR.png";
 import { trackPixelEvent } from "../../utils/pixel";
 import { getUtmParamsForNotes } from "../../utils/utm";
 
-export default function ThankYouPage({ selectedLanguage, fullName, phone, email, paymentId, uniqueCustomerId, onBackToHome }) {
+export default function ThankYouPage({ selectedLanguage, fullName, phone, email, paymentId, uniqueCustomerId, paidAmount, onBackToHome }) {
   // Interactive Popup States
   const [showPopup, setShowPopup] = useState(true);
   const [discountClaimed, setDiscountClaimed] = useState(false);
@@ -26,6 +26,7 @@ export default function ThankYouPage({ selectedLanguage, fullName, phone, email,
   const activePhone = phone || savedOrder.phone || "";
   const activeCustomerId = uniqueCustomerId || savedOrder.uniqueCustomerId || ("NEWVW-" + Math.floor(10000000 + Math.random() * 90000000));
   const activePaymentId = paymentId || savedOrder.paymentId || ("PAY_" + Math.random().toString(36).substring(2, 10).toUpperCase());
+  const activePaidAmount = paidAmount || savedOrder.paidAmount || 1299;
 
   const isHindi = selectedLanguage === "Hindi";
 
@@ -40,9 +41,9 @@ export default function ThankYouPage({ selectedLanguage, fullName, phone, email,
       window.history.pushState({}, "", baseRoute);
     }
 
-    // Fire Meta Facebook Pixel Purchase Triggers:
-    trackPixelEvent("Purchase English", { value: 1499, currency: "INR" }, true);
-    trackPixelEvent("Purchase", { value: 1499, currency: "INR", content_name: "Vastu Wheels English FB" });
+    // Fire Meta Facebook Pixel Purchase Triggers with Dynamic Amount:
+    trackPixelEvent("Purchase English", { value: activePaidAmount, currency: "INR" }, true);
+    trackPixelEvent("Purchase", { value: activePaidAmount, currency: "INR", content_name: "Vastu Wheels English FB" });
   }, [showPopup]);
 
   // 🎉 Party Popper Confetti Burst & Fast Rolling Price Animation (₹1,999 down to ₹1,799)
@@ -395,7 +396,7 @@ export default function ThankYouPage({ selectedLanguage, fullName, phone, email,
             </h3>
             <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 text-[11px] font-extrabold px-3 py-0.5 rounded-full flex items-center gap-1">
               <ShieldCheck size={13} className="text-emerald-700" />
-              <span>{isVipUpgraded ? "PAID (UPGRADE REPORT)" : "PAID ₹1,499"}</span>
+              <span>{isVipUpgraded ? "PAID (UPGRADE REPORT)" : `PAID ₹${Number(activePaidAmount).toLocaleString("en-IN")}`}</span>
             </span>
           </div>
 
