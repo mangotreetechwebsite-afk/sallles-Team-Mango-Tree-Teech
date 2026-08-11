@@ -90,7 +90,7 @@ export default function App() {
   }, []);
 
   const handleNavigateCheckout = () => {
-    trackPixelEvent("AddToCart", { value: 1199, currency: "INR" });
+    trackPixelEvent("AddToCart", { value: 1499, currency: "INR" });
     window.history.pushState({}, "", "/checkout");
     setCurrentPage("checkout");
     window.scrollTo({ top: 0, behavior: "smooth" });

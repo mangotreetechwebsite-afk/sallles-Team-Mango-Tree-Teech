@@ -41,8 +41,8 @@ export default function ThankYouPage({ selectedLanguage, fullName, phone, email,
     }
 
     // Fire Meta Facebook Pixel Purchase Triggers:
-    trackPixelEvent("Purchase English", { value: 1199, currency: "INR" }, true);
-    trackPixelEvent("Purchase", { value: 1199, currency: "INR", content_name: "Vastu Wheels English FB" });
+    trackPixelEvent("Purchase English", { value: 1499, currency: "INR" }, true);
+    trackPixelEvent("Purchase", { value: 1499, currency: "INR", content_name: "Vastu Wheels English FB" });
   }, [showPopup]);
 
   // 🎉 Party Popper Confetti Burst & Fast Rolling Price Animation (₹1,999 down to ₹1,799)
@@ -395,7 +395,7 @@ export default function ThankYouPage({ selectedLanguage, fullName, phone, email,
             </h3>
             <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 text-[11px] font-extrabold px-3 py-0.5 rounded-full flex items-center gap-1">
               <ShieldCheck size={13} className="text-emerald-700" />
-              <span>{isVipUpgraded ? "PAID (UPGRADE REPORT)" : "PAID ₹1,199"}</span>
+              <span>{isVipUpgraded ? "PAID (UPGRADE REPORT)" : "PAID ₹1,499"}</span>
             </span>
           </div>
 

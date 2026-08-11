@@ -20,9 +20,9 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Pricing & Coupon States (Default ₹1,199 -> Coupon drops to ₹999)
+  // Pricing & Coupon States (Default ₹1,499 -> Coupon drops to ₹1,299)
   const [discountApplied, setDiscountApplied] = useState(false);
-  const [displayPrice, setDisplayPrice] = useState(1199);
+  const [displayPrice, setDisplayPrice] = useState(1499);
   const [isRolling, setIsRolling] = useState(false);
 
   // Live 10-Minute Urgency Countdown Timer
@@ -129,7 +129,7 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
     animate();
   };
 
-  // Interactive Coupon Click Handler (Confetti Explosion + Rolling Price Drop 1199 -> 999)
+  // Interactive Coupon Click Handler (Confetti Explosion + Rolling Price Drop 1499 -> 1299)
   const handleApplyCoupon = () => {
     if (discountApplied || isRolling) return;
     setIsRolling(true);
@@ -137,9 +137,9 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
     // Fire HTML5 Canvas Party Popper Burst ONCE
     triggerCanvasConfetti();
 
-    // Fast Rolling Counter Animation (₹1,199 down to ₹999)
-    let current = 1199;
-    const target = 999;
+    // Fast Rolling Counter Animation (₹1,499 down to ₹1,299)
+    let current = 1499;
+    const target = 1299;
     const step = 20;
     const interval = setInterval(() => {
       current -= step;
@@ -148,14 +148,14 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
         clearInterval(interval);
         setIsRolling(false);
         setDiscountApplied(true);
-        setDisplayPrice(999);
+        setDisplayPrice(1299);
       } else {
         setDisplayPrice(current);
       }
     }, 35);
 
     try {
-      trackPixelEvent("CouponApplied", { discount: 200, price: 999 });
+      trackPixelEvent("CouponApplied", { discount: 200, price: 1299 });
     } catch (e) {}
   };
 
@@ -197,7 +197,7 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
       const orderRes = await fetch("/api/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: displayPrice * 100 }) // ₹1,199 or ₹999 in paise
+        body: JSON.stringify({ amount: displayPrice * 100 }) // ₹1,499 or ₹1,299 in paise
       });
       if (orderRes.ok) {
         const orderData = await orderRes.json();
@@ -213,7 +213,7 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
 
     const options = {
       key: keyId,
-      amount: displayPrice * 100, // Dynamic amount: ₹1,199 (119900) or ₹999 (99900)
+      amount: displayPrice * 100, // Dynamic amount: ₹1,499 (149900) or ₹1,299 (129900)
       currency: "INR",
       name: "VastuWheels (Powered & Managed by GlobalInch)",
       description: "Personalised Vastu Science Report",
@@ -242,7 +242,7 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
         unique_customer_id: uniqueCustomerId,
         full_name: formData.fullName,
         phone_number: formData.phone,
-        original_price: "₹1,199",
+        original_price: "₹1,499",
         paid_price: `₹${displayPrice}`,
         coupon_applied: discountApplied ? "VASTU200" : "NONE",
         report_language: formData.reportLanguage === "Hindi" ? "Vastu Wheels Hindi fb" : "Vastu Wheels English FB",
@@ -351,7 +351,7 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
               </div>
             )}
 
-            {/* 🎁 INTERACTIVE VIP DISCOUNT COUPON CARD (1199 -> 999) */}
+            {/* 🎁 INTERACTIVE VIP DISCOUNT COUPON CARD (1499 -> 1299) */}
             <div 
               onClick={handleApplyCoupon}
               className={`p-4 sm:p-6 rounded-2xl border-2 transition-all duration-300 relative overflow-hidden cursor-pointer coupon-ticket-notch ${
@@ -382,10 +382,10 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
                 <div className="text-right shrink-0">
                   <div className="flex items-center gap-2 justify-end">
                     
-                    {/* Scratched Original Price ₹1,199 */}
+                    {/* Scratched Original Price ₹1,499 */}
                     {discountApplied ? (
                       <span className="scratched-price text-xs sm:text-base">
-                        ₹1,199
+                        ₹1,499
                       </span>
                     ) : (
                       <span className="text-xs sm:text-sm text-slate-400 font-bold line-through">
