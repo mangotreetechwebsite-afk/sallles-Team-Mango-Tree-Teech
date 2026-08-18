@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ArrowLeft, ShieldCheck, CheckCircle2, Clock, Mail, Phone, CreditCard, FileCheck, User, MessageCircle, X, Sparkles, Zap, Headphones, Gift } from "lucide-react";
 import vwLogo from "../../assets/VW-HR.png";
-import { trackPixelEvent } from "../../utils/pixel";
 import { getUtmParamsForNotes } from "../../utils/utm";
 
 export default function ThankYouPage({ selectedLanguage, fullName, phone, email, paymentId, uniqueCustomerId, paidAmount, onBackToHome }) {
@@ -40,10 +39,6 @@ export default function ThankYouPage({ selectedLanguage, fullName, phone, email,
     } else {
       window.history.pushState({}, "", baseRoute);
     }
-
-    // Fire Meta Facebook Pixel Purchase Triggers with Dynamic Amount:
-    trackPixelEvent("Purchase English", { value: activePaidAmount, currency: "INR" }, true);
-    trackPixelEvent("Purchase", { value: activePaidAmount, currency: "INR", content_name: "Vastu Wheels English FB" });
   }, [showPopup]);
 
   // 🎉 Party Popper Confetti Burst & Fast Rolling Price Animation (₹1,999 down to ₹1,799)
@@ -137,10 +132,6 @@ export default function ThankYouPage({ selectedLanguage, fullName, phone, email,
         setShowPopup(false);
         setIsVipUpgraded(true);
         setVipPaymentId(response?.razorpay_payment_id || ("PAY_UPGRADE_" + Math.random().toString(36).substring(2, 10).toUpperCase()));
-        
-        // Trigger Facebook Pixel Upgrade Purchase Events:
-        trackPixelEvent("Purchase Report Upgrade", { value: displayPrice, currency: "INR" });
-        trackPixelEvent("Purchase", { value: displayPrice, currency: "INR", content_name: "Vastu Wheels Report Upgrade" });
       },
       prefill: {
         name: activeFullName,

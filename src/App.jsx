@@ -14,7 +14,6 @@ import Footer from "./components/Footer/Footer";
 import ReportForm from "./components/ReportForm/ReportForm";
 import LegalPage from "./components/LegalPage/LegalPage";
 import ThankYouPage from "./components/ThankYouPage/ThankYouPage";
-import { trackPixelEvent } from "./utils/pixel";
 import { captureUtmParams } from "./utils/utm";
 
 // Compute initial page synchronously to prevent initial render flicker/flash
@@ -91,7 +90,6 @@ export default function App() {
   }, []);
 
   const handleNavigateCheckout = () => {
-    trackPixelEvent("AddToCart", { value: 1499, currency: "INR" });
     window.history.pushState({}, "", "/checkout");
     setCurrentPage("checkout");
     window.scrollTo({ top: 0, behavior: "smooth" });

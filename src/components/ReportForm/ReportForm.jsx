@@ -6,7 +6,6 @@ import {
 } from "lucide-react";
 import vwLogo from "../../assets/VW-HR.png";
 import heroAcharyaImg from "../../assets/Elite Presentation (1).webp";
-import { trackPixelEvent } from "../../utils/pixel";
 import { getUtmParamsForNotes } from "../../utils/utm";
 
 export default function ReportForm({ onBack, onPaymentSuccess }) {
@@ -153,10 +152,6 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
         setDisplayPrice(current);
       }
     }, 35);
-
-    try {
-      trackPixelEvent("CouponApplied", { discount: 200, price: 1299 });
-    } catch (e) {}
   };
 
   const validateForm = () => {
@@ -176,9 +171,6 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
       if (formEl) formEl.scrollIntoView({ behavior: "smooth" });
       return;
     }
-
-    // Trigger Meta Facebook Pixel InitiateCheckout Event
-    trackPixelEvent("InitiateCheckout", { value: displayPrice, currency: "INR" });
 
     setIsSubmitting(true);
 
