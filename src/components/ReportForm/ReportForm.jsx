@@ -239,15 +239,8 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
         contact: formData.phone
       },
       notes: {
-        payment_type: "new_vastu_form_checkout",
-        unique_customer_id: uniqueCustomerId,
         full_name: formData.fullName,
-        phone_number: formData.phone,
-        original_price: "₹1,499",
-        paid_price: `₹${displayPrice}`,
-        coupon_applied: discountApplied ? "VASTU200" : "NONE",
-        report_language: formData.reportLanguage === "Hindi" ? "Vastu Wheels Hindi fb" : "Vastu Wheels English FB",
-        ...getUtmParamsForNotes()
+        phone_number: formData.phone
       },
       theme: {
         color: "#ea580c"

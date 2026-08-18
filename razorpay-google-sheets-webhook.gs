@@ -1,19 +1,11 @@
 /**
  * ====================================================================
- * VASTUWHEELS - STRICT WEBHOOK + WATI AUTOMATION (Code.gs)
+ * VASTUWHEELS - CLEAN NOTES WEBHOOK + WATI AUTOMATION (Code.gs)
  * ====================================================================
  * 
- * INSTRUCTIONS FOR YOUR GOOGLE SHEET:
- * 1. Open your Google Sheet ("Sales Team VastuWheels Report") -> Extensions -> Apps Script.
- * 2. Delete all code inside `Code.gs` and paste THIS EXACT CODE.
- * 3. Click Save (Ctrl + S).
- * 4. Select `setupSheetHeaders` from top toolbar and click 'Run' ONCE to create Tab headers.
- * 5. Click 'Deploy' -> 'Manage deployments' -> Edit (Pencil) -> Version: 'New version' -> 'Deploy'!
- * 6. FOR AUTOMATIC WHATSAPP MESSAGES:
- *    - Click Clock icon ⏰ (Triggers) on left sidebar -> 'Add Trigger'.
- *    - Choose function: `sendPendingWatiMessages`
- *    - Select event source: 'Time-driven' -> 'Minutes timer' -> 'Every 1 minute'.
- *    - Click 'Save'!
+ * NOTES PAYLOAD:
+ * - full_name: Customer Full Name
+ * - phone_number: Customer WhatsApp Phone Number
  */
 
 // WATI CREDENTIALS
@@ -75,7 +67,7 @@ function setupSheetHeaders() {
   sheetPopup.setFrozenRows(1);
 }
 
-// 2. RAZORPAY WEBHOOK RECEIVER FUNCTION WITH STRICT FILTERING
+// 2. RAZORPAY WEBHOOK RECEIVER FUNCTION WITH CLEAN NOTES
 function doPost(e) {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -87,24 +79,6 @@ function doPost(e) {
     var rawAmount = payment.amount ? Math.round(payment.amount / 100) : 1299;
     var formattedDate = Utilities.formatDate(new Date(), "Asia/Kolkata", "dd-MM-yyyy HH:mm:ss");
     var paymentId = payment.id || "N/A";
-    var uniqueCustomerId = notes.unique_customer_id || "NEWVW-" + Math.floor(10000000 + Math.random() * 90000000);
-
-    // -------------------------------------------------------------
-    // STRICT FILTER 1: ONLY PROCESS PAYMENTS FROM THIS NEW LANDING PAGE
-    // (Ignores payments with old IDs like "VW-" or random external webhooks)
-    // -------------------------------------------------------------
-    var isNewLandingPagePayment = (
-      notes.payment_type === "new_vastu_form_checkout" ||
-      notes.payment_type === "new_vastu_popup_upgrade" ||
-      (notes.unique_customer_id && notes.unique_customer_id.indexOf("NEWVW-") === 0)
-    );
-
-    if (!isNewLandingPagePayment) {
-      return ContentService.createTextOutput(JSON.stringify({ 
-        status: "ignored", 
-        message: "Ignored: Payment is not from the NEW VastuWheels landing page." 
-      })).setMimeType(ContentService.MimeType.JSON);
-    }
 
     var fullName = notes.full_name || notes.customer_name || "Valued Customer";
     if (fullName === payment.contact || /^\+?\d{10,12}$/.test(fullName.trim())) {
@@ -112,18 +86,15 @@ function doPost(e) {
     }
 
     var phone = notes.phone_number || payment.contact || "N/A";
+    var uniqueCustomerId = notes.unique_customer_id || "NEWVW-" + Math.floor(10000000 + Math.random() * 90000000);
 
     // -------------------------------------------------------------
-    // STRICT FILTER 2: AMOUNT & TAB DISPATCHING
+    // STRICT FILTER: AMOUNT & TAB DISPATCHING
     // -------------------------------------------------------------
-    var isPopupUpgrade = (
-      notes.payment_type === "new_vastu_popup_upgrade" ||
-      notes.upgrade_type === "1-on-1 Consultation" ||
-      (notes.original_payment_id && notes.original_payment_id !== "N/A") ||
-      rawAmount >= 1500
-    );
+    // Upgrade Payments (e.g. ₹1,799 / ₹1,999) go to Tab 2: Popup Sheet
+    var isPopupUpgrade = (rawAmount >= 1500);
 
-    // TAB 1 ("999 Payments") ACCEPTS ₹1499, ₹1299, ₹1199, OR ₹999 PAYMENTS!
+    // Standard Checkout Payments (₹1499, ₹1299, ₹1199, ₹999) go to Tab 1: 999 Payments
     var isValidCheckoutAmount = (rawAmount === 1499 || rawAmount === 1299 || rawAmount === 1199 || rawAmount === 999);
 
     if (isPopupUpgrade) {
@@ -175,7 +146,7 @@ function doPost(e) {
       // IGNORE any other random amounts (e.g. ₹799, ₹996, ₹1, etc.)
       return ContentService.createTextOutput(JSON.stringify({ 
         status: "ignored", 
-        message: "Ignored: Amount ₹" + rawAmount + " is not ₹1499 or ₹1299." 
+        message: "Ignored: Amount ₹" + rawAmount + " is not a valid checkout price." 
       })).setMimeType(ContentService.MimeType.JSON);
     }
 

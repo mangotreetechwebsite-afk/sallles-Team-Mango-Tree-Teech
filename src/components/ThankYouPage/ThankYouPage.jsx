@@ -147,14 +147,8 @@ export default function ThankYouPage({ selectedLanguage, fullName, phone, email,
         contact: activePhone
       },
       notes: {
-        payment_type: "new_vastu_popup_upgrade", // Modified so old Google Sheet ignores it!
-        unique_customer_id: activeCustomerId,
-        original_payment_id: activePaymentId,
         full_name: activeFullName,
-        phone_number: activePhone,
-        report_language: "Vastu Wheels English FB",
-        upgrade_type: "1-on-1 Consultation",
-        ...getUtmParamsForNotes()
+        phone_number: activePhone
       },
       theme: {
         color: "#ea580c"
