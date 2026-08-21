@@ -20,14 +20,14 @@ export default async function handler(req, res) {
     const keySecret = process.env.RAZORPAY_KEY_SECRET || "LCxS51pcOmaaQKCE5tocaJL0";
 
     // Allowed Valid Prices in Paise:
-    // ₹1,499 (149900), ₹1,299 (129900), ₹1,199 (119900), ₹999 (99900), ₹1,999 (199900), ₹1,799 (179900), ₹1 Test Amount (100)
-    let validatedAmount = amount ? parseInt(amount, 10) : 129900;
+    // ₹1,799 (179900), ₹1,499 (149900), ₹1,299 (129900), ₹1,199 (119900), ₹999 (99900), ₹1,999 (199900), ₹1 Test Amount (100)
+    let validatedAmount = amount ? parseInt(amount, 10) : 149900;
     
-    // Server-Side Price Protection Guard: If someone sends invalid amount, default to ₹1,299
-    const allowedAmounts = [149900, 129900, 119900, 99900, 199900, 179900, 100];
+    // Server-Side Price Protection Guard: If someone sends invalid amount, default to ₹1,499
+    const allowedAmounts = [179900, 149900, 129900, 119900, 99900, 199900, 100];
     if (!allowedAmounts.includes(validatedAmount)) {
-      console.warn(`Unauthorized custom price attempt (${validatedAmount}), enforcing default price ₹1,299`);
-      validatedAmount = 129900;
+      console.warn(`Unauthorized custom price attempt (${validatedAmount}), enforcing default price ₹1,499`);
+      validatedAmount = 149900;
     }
 
     const authString = Buffer.from(`${keyId}:${keySecret}`).toString("base64");

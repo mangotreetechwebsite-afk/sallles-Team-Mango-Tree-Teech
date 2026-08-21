@@ -50,7 +50,7 @@ export default function App() {
     fullName: "", 
     phone: "",
     email: "",
-    paidAmount: 1299,
+    paidAmount: 1499,
     paymentId: ""
   });
 
@@ -115,7 +115,7 @@ export default function App() {
       fullName: data.fullName || "",
       phone: data.phone || "",
       email: data.email || "",
-      paidAmount: data.paidAmount || 1299,
+      paidAmount: data.paidAmount || 1499,
       paymentId: data.paymentId || "",
       uniqueCustomerId: data.uniqueCustomerId || ("NEWVW-" + Math.floor(10000000 + Math.random() * 90000000))
     };

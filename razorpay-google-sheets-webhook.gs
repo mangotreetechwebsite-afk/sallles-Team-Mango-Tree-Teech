@@ -76,7 +76,7 @@ function doPost(e) {
     var payment = postData.payload && postData.payload.payment ? postData.payload.payment.entity : {};
     var notes = payment.notes || {};
 
-    var rawAmount = payment.amount ? Math.round(payment.amount / 100) : 1299;
+    var rawAmount = payment.amount ? Math.round(payment.amount / 100) : 1499;
     var formattedDate = Utilities.formatDate(new Date(), "Asia/Kolkata", "dd-MM-yyyy HH:mm:ss");
     var paymentId = payment.id || "N/A";
 
@@ -91,11 +91,11 @@ function doPost(e) {
     // -------------------------------------------------------------
     // STRICT FILTER: AMOUNT & TAB DISPATCHING
     // -------------------------------------------------------------
-    // Upgrade Payments (e.g. ₹1,799 / ₹1,999) go to Tab 2: Popup Sheet
-    var isPopupUpgrade = (rawAmount >= 1500);
+    // Upgrade Payments (e.g. ₹1,999) go to Tab 2: Popup Sheet
+    var isPopupUpgrade = (rawAmount >= 1900);
 
-    // Standard Checkout Payments (₹1499, ₹1299, ₹1199, ₹999) go to Tab 1: 999 Payments
-    var isValidCheckoutAmount = (rawAmount === 1499 || rawAmount === 1299 || rawAmount === 1199 || rawAmount === 999);
+    // Standard Checkout Payments (₹1799, ₹1499, ₹1299, ₹1199, ₹999) go to Tab 1: 999 Payments
+    var isValidCheckoutAmount = (rawAmount === 1799 || rawAmount === 1499 || rawAmount === 1299 || rawAmount === 1199 || rawAmount === 999);
 
     if (isPopupUpgrade) {
       // TAB 2: Popup Sheet (Col 8 H = Wati Status)
@@ -122,7 +122,7 @@ function doPost(e) {
         .setMimeType(ContentService.MimeType.JSON);
 
     } else if (isValidCheckoutAmount) {
-      // TAB 1: 999 Payments (ACCEPTS ₹1499, ₹1299, ₹1199, OR ₹999)
+      // TAB 1: 999 Payments (ACCEPTS ₹1799, ₹1499, ₹1299, ₹1199, OR ₹999)
       var sheet996 = ss.getSheetByName("999 Payments");
       if (!sheet996) {
         setupSheetHeaders();
@@ -188,7 +188,7 @@ function processSheetWati(sheet, nameColIndex, amountColIndex, phoneColIndex, st
     // Process rows marked PENDING, FAILED, or empty
     if (currentStatus === "PENDING" || currentStatus.indexOf("FAILED") === 0 || currentStatus === "") {
       var fullName = String(row[nameColIndex - 1]).trim() || "Valued Customer";
-      var amount = String(row[amountColIndex - 1]).trim() || "1299";
+      var amount = String(row[amountColIndex - 1]).trim() || "1499";
       var rawPhone = String(row[phoneColIndex - 1]).trim();
 
       // Clean phone number format (e.g., 917217697887)

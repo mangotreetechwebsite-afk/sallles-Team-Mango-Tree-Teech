@@ -19,9 +19,9 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Pricing & Coupon States (Default ₹1,499 -> Coupon drops to ₹1,299)
+  // Pricing & Coupon States (Default ₹1,799 -> Coupon drops to ₹1,499)
   const [discountApplied, setDiscountApplied] = useState(false);
-  const [displayPrice, setDisplayPrice] = useState(1499);
+  const [displayPrice, setDisplayPrice] = useState(1799);
   const [isRolling, setIsRolling] = useState(false);
 
   // Live 10-Minute Urgency Countdown Timer
@@ -128,7 +128,7 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
     animate();
   };
 
-  // Interactive Coupon Click Handler (Confetti Explosion + Rolling Price Drop 1499 -> 1299)
+  // Interactive Coupon Click Handler (Confetti Explosion + Rolling Price Drop 1799 -> 1499)
   const handleApplyCoupon = () => {
     if (discountApplied || isRolling) return;
     setIsRolling(true);
@@ -136,9 +136,9 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
     // Fire HTML5 Canvas Party Popper Burst ONCE
     triggerCanvasConfetti();
 
-    // Fast Rolling Counter Animation (₹1,499 down to ₹1,299)
-    let current = 1499;
-    const target = 1299;
+    // Fast Rolling Counter Animation (₹1,799 down to ₹1,499)
+    let current = 1799;
+    const target = 1499;
     const step = 20;
     const interval = setInterval(() => {
       current -= step;
@@ -147,7 +147,7 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
         clearInterval(interval);
         setIsRolling(false);
         setDiscountApplied(true);
-        setDisplayPrice(1299);
+        setDisplayPrice(1499);
       } else {
         setDisplayPrice(current);
       }
@@ -338,7 +338,7 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
               </div>
             )}
 
-            {/* 🎁 INTERACTIVE VIP DISCOUNT COUPON CARD (1499 -> 1299) */}
+            {/* 🎁 INTERACTIVE VIP DISCOUNT COUPON CARD (1799 -> 1499) */}
             <div 
               onClick={handleApplyCoupon}
               className={`p-4 sm:p-6 rounded-2xl border-2 transition-all duration-300 relative overflow-hidden cursor-pointer coupon-ticket-notch ${
@@ -354,14 +354,14 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
                   <div className="flex items-center gap-1.5">
                     <Gift size={20} className={discountApplied ? "text-emerald-600 shrink-0" : "text-[#ea580c] animate-bounce shrink-0"} />
                     <span className={`text-xs sm:text-sm font-black uppercase tracking-wide ${discountApplied ? "text-emerald-700" : "text-[#ea580c]"}`}>
-                      {discountApplied ? "🎉 COUPON APPLIED: VASTU200" : "🎁 UNLOCK ₹200 INSTANT DISCOUNT"}
+                      {discountApplied ? "🎉 COUPON APPLIED: VASTU300" : "🎁 UNLOCK ₹300 INSTANT DISCOUNT"}
                     </span>
                   </div>
 
                   <p className="text-xs sm:text-sm text-slate-700 font-semibold leading-tight">
                     {discountApplied 
                       ? "Congratulations! You unlocked the lowest price guaranteed." 
-                      : "Tap here to scratch & apply ₹200 OFF coupon!"}
+                      : "Tap here to scratch & apply ₹300 OFF coupon!"}
                   </p>
                 </div>
 
@@ -369,10 +369,10 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
                 <div className="text-right shrink-0">
                   <div className="flex items-center gap-2 justify-end">
                     
-                    {/* Scratched Original Price ₹1,499 */}
+                    {/* Scratched Original Price ₹1,799 */}
                     {discountApplied ? (
                       <span className="scratched-price text-xs sm:text-base">
-                        ₹1,499
+                        ₹1,799
                       </span>
                     ) : (
                       <span className="text-xs sm:text-sm text-slate-400 font-bold line-through">
@@ -394,7 +394,7 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
                   <div className="mt-1">
                     {discountApplied ? (
                       <span className="inline-flex items-center gap-1 bg-emerald-600 text-white text-xs font-black px-3 py-1 rounded-full shadow-sm">
-                        <Check size={13} /> SAVED ₹200
+                        <Check size={13} /> SAVED ₹300
                       </span>
                     ) : (
                       <button 
@@ -402,7 +402,7 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
                         onClick={(e) => { e.stopPropagation(); handleApplyCoupon(); }}
                         className="inline-flex items-center gap-1 bg-[#ea580c] hover:bg-orange-600 text-white text-xs font-black px-3 py-1.5 rounded-full shadow-md transition-all cursor-pointer"
                       >
-                        <Scissors size={12} /> TAP FOR ₹200 OFF
+                        <Scissors size={12} /> TAP FOR ₹300 OFF
                       </button>
                     )}
                   </div>

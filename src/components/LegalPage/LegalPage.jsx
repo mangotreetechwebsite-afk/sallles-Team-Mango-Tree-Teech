@@ -102,7 +102,7 @@ export default function LegalPage({ activeDoc, onBackToHome, onSelectDoc }) {
           <div className="border-l-4 border-orange-500 pl-4 py-1 bg-orange-50/50 rounded-r-xl">
             <h4 className="font-extrabold text-slate-900 text-base">3. Non-Refundable Policy Agreement</h4>
             <p className="mt-1 text-slate-600">
-              By completing the transaction of ₹1,499, you acknowledge and agree that all payments are 100% Non-Refundable as customized digital analysis work begins immediately upon order receipt.
+              By completing the transaction of ₹1,799, you acknowledge and agree that all payments are 100% Non-Refundable as customized digital analysis work begins immediately upon order receipt.
             </p>
           </div>
 

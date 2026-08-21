@@ -25,7 +25,7 @@ export default function ThankYouPage({ selectedLanguage, fullName, phone, email,
   const activePhone = phone || savedOrder.phone || "";
   const activeCustomerId = uniqueCustomerId || savedOrder.uniqueCustomerId || ("NEWVW-" + Math.floor(10000000 + Math.random() * 90000000));
   const activePaymentId = paymentId || savedOrder.paymentId || ("PAY_" + Math.random().toString(36).substring(2, 10).toUpperCase());
-  const activePaidAmount = paidAmount || savedOrder.paidAmount || 1299;
+  const activePaidAmount = paidAmount || savedOrder.paidAmount || 1499;
 
   const isHindi = selectedLanguage === "Hindi";
 
