@@ -1,11 +1,13 @@
 /**
  * ====================================================================
- * VASTUWHEELS - CLEAN NOTES WEBHOOK + WATI AUTOMATION (Code.gs)
+ * VASTUWHEELS - CLEAN WEBHOOK + WATI AUTOMATION (Code.gs)
  * ====================================================================
  * 
- * NOTES PAYLOAD:
- * - full_name: Customer Full Name
- * - phone_number: Customer WhatsApp Phone Number
+ * INSTRUCTIONS FOR YOUR GOOGLE SHEET:
+ * 1. Open your Google Sheet ("Sales Team VastuWheels Report") -> Extensions -> Apps Script.
+ * 2. Delete ALL existing code inside `Code.gs` and paste THIS EXACT CODE.
+ * 3. Click Save (Ctrl + S).
+ * 4. Click 'Deploy' -> 'Manage deployments' -> Edit (Pencil icon) -> Version: 'New version' -> Click 'Deploy'!
  */
 
 // WATI CREDENTIALS
@@ -67,7 +69,7 @@ function setupSheetHeaders() {
   sheetPopup.setFrozenRows(1);
 }
 
-// 2. RAZORPAY WEBHOOK RECEIVER FUNCTION WITH CLEAN NOTES
+// 2. RAZORPAY WEBHOOK RECEIVER FUNCTION
 function doPost(e) {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -79,6 +81,7 @@ function doPost(e) {
     var rawAmount = payment.amount ? Math.round(payment.amount / 100) : 1499;
     var formattedDate = Utilities.formatDate(new Date(), "Asia/Kolkata", "dd-MM-yyyy HH:mm:ss");
     var paymentId = payment.id || "N/A";
+    var uniqueCustomerId = "NEWVW-" + Math.floor(10000000 + Math.random() * 90000000);
 
     var fullName = notes.full_name || notes.customer_name || "Valued Customer";
     if (fullName === payment.contact || /^\+?\d{10,12}$/.test(fullName.trim())) {
@@ -86,10 +89,9 @@ function doPost(e) {
     }
 
     var phone = notes.phone_number || payment.contact || "N/A";
-    var uniqueCustomerId = notes.unique_customer_id || "NEWVW-" + Math.floor(10000000 + Math.random() * 90000000);
 
     // -------------------------------------------------------------
-    // STRICT FILTER: AMOUNT & TAB DISPATCHING
+    // AMOUNT DISPATCHING (Supports ₹1799, ₹1499, ₹1299, ₹1199, ₹999)
     // -------------------------------------------------------------
     // Upgrade Payments (e.g. ₹1,999) go to Tab 2: Popup Sheet
     var isPopupUpgrade = (rawAmount >= 1900);
