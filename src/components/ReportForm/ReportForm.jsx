@@ -231,6 +231,7 @@ export default function ReportForm({ onBack, onPaymentSuccess }) {
         contact: formData.phone
       },
       notes: {
+        payment_type: "new_vastu_sales_team_report",
         full_name: formData.fullName,
         phone_number: formData.phone
       },

@@ -138,6 +138,7 @@ export default function ThankYouPage({ selectedLanguage, fullName, phone, email,
         contact: activePhone
       },
       notes: {
+        payment_type: "new_vastu_popup_upgrade",
         full_name: activeFullName,
         phone_number: activePhone
       },

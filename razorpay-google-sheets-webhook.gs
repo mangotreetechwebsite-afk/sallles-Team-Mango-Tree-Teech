@@ -1,13 +1,10 @@
 /**
  * ====================================================================
- * VASTUWHEELS - CLEAN WEBHOOK + WATI AUTOMATION (Code.gs)
+ * VASTUWHEELS - ZERO PRICE FILTER WEBHOOK + WATI AUTOMATION (Code.gs)
  * ====================================================================
  * 
- * INSTRUCTIONS FOR YOUR GOOGLE SHEET:
- * 1. Open your Google Sheet ("Sales Team VastuWheels Report") -> Extensions -> Apps Script.
- * 2. Delete ALL existing code inside `Code.gs` and paste THIS EXACT CODE.
- * 3. Click Save (Ctrl + S).
- * 4. Click 'Deploy' -> 'Manage deployments' -> Edit (Pencil icon) -> Version: 'New version' -> Click 'Deploy'!
+ * ACCEPTS ALL PAYMENTS WITH payment_type: "new_vastu_sales_team_report"
+ * REGARDLESS OF AMOUNT (ANY PRICE IS SAVED INSTANTLY TO GOOGLE SHEET)!
  */
 
 // WATI CREDENTIALS
@@ -69,7 +66,7 @@ function setupSheetHeaders() {
   sheetPopup.setFrozenRows(1);
 }
 
-// 2. RAZORPAY WEBHOOK RECEIVER FUNCTION
+// 2. RAZORPAY WEBHOOK RECEIVER FUNCTION (ZERO PRICE FILTER)
 function doPost(e) {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -78,10 +75,27 @@ function doPost(e) {
     var payment = postData.payload && postData.payload.payment ? postData.payload.payment.entity : {};
     var notes = payment.notes || {};
 
-    var rawAmount = payment.amount ? Math.round(payment.amount / 100) : 1499;
+    var rawAmount = payment.amount ? Math.round(payment.amount / 100) : 0;
     var formattedDate = Utilities.formatDate(new Date(), "Asia/Kolkata", "dd-MM-yyyy HH:mm:ss");
     var paymentId = payment.id || "N/A";
     var uniqueCustomerId = "NEWVW-" + Math.floor(10000000 + Math.random() * 90000000);
+
+    // -------------------------------------------------------------
+    // STRICT FILTER 1: IDENTIFY LANDING PAGE PAYMENTS
+    // -------------------------------------------------------------
+    var isNewLandingPagePayment = (
+      notes.payment_type === "new_vastu_sales_team_report" ||
+      notes.payment_type === "new_vastu_form_checkout" ||
+      notes.payment_type === "new_vastu_popup_upgrade" ||
+      (notes.full_name && notes.phone_number)
+    );
+
+    if (!isNewLandingPagePayment) {
+      return ContentService.createTextOutput(JSON.stringify({ 
+        status: "ignored", 
+        message: "Ignored: Payment is not from VastuWheels landing page." 
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
 
     var fullName = notes.full_name || notes.customer_name || "Valued Customer";
     if (fullName === payment.contact || /^\+?\d{10,12}$/.test(fullName.trim())) {
@@ -91,16 +105,12 @@ function doPost(e) {
     var phone = notes.phone_number || payment.contact || "N/A";
 
     // -------------------------------------------------------------
-    // AMOUNT DISPATCHING (Supports ₹1799, ₹1499, ₹1299, ₹1199, ₹999)
+    // DISPATCHING (ANY PRICE IS ACCEPTED AND SAVED INSTANTLY)
     // -------------------------------------------------------------
-    // Upgrade Payments (e.g. ₹1,999) go to Tab 2: Popup Sheet
-    var isPopupUpgrade = (rawAmount >= 1900);
-
-    // Standard Checkout Payments (₹1799, ₹1499, ₹1299, ₹1199, ₹999) go to Tab 1: 999 Payments
-    var isValidCheckoutAmount = (rawAmount === 1799 || rawAmount === 1499 || rawAmount === 1299 || rawAmount === 1199 || rawAmount === 999);
+    var isPopupUpgrade = (notes.payment_type === "new_vastu_popup_upgrade");
 
     if (isPopupUpgrade) {
-      // TAB 2: Popup Sheet (Col 8 H = Wati Status)
+      // TAB 2: Popup Sheet (Upgrade Payments)
       var sheetPopup = ss.getSheetByName("Popup Sheet");
       if (!sheetPopup) {
         setupSheetHeaders();
@@ -123,8 +133,8 @@ function doPost(e) {
       return ContentService.createTextOutput(JSON.stringify({ status: "success", tab: "Popup Sheet", unique_customer_id: uniqueCustomerId }))
         .setMimeType(ContentService.MimeType.JSON);
 
-    } else if (isValidCheckoutAmount) {
-      // TAB 1: 999 Payments (ACCEPTS ₹1799, ₹1499, ₹1299, ₹1199, OR ₹999)
+    } else {
+      // TAB 1: 999 Payments (STRICTLY ACCEPTS ALL PAYMENTS REGARDLESS OF PRICE)
       var sheet996 = ss.getSheetByName("999 Payments");
       if (!sheet996) {
         setupSheetHeaders();
@@ -143,13 +153,6 @@ function doPost(e) {
 
       return ContentService.createTextOutput(JSON.stringify({ status: "success", tab: "999 Payments", unique_customer_id: uniqueCustomerId }))
         .setMimeType(ContentService.MimeType.JSON);
-
-    } else {
-      // IGNORE any other random amounts (e.g. ₹799, ₹996, ₹1, etc.)
-      return ContentService.createTextOutput(JSON.stringify({ 
-        status: "ignored", 
-        message: "Ignored: Amount ₹" + rawAmount + " is not a valid checkout price." 
-      })).setMimeType(ContentService.MimeType.JSON);
     }
 
   } catch (error) {
